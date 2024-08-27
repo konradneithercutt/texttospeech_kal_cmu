@@ -1,0 +1,67 @@
+
+This directory contains a typical US diphone voice built using the
+simplest diphone method specified in the festvox document
+(http://www.festvox.org/festvox/) in section "US/UK English
+Walkthrough" Note although this is based on the same recordings as the
+distributed festvox_kal*.tar.gz voice this version does not have the
+tidy ups that the standard release has.
+
+The included recordings are actually the KAL voice (again), as taken
+from (http://www.festvox.org/databases/cmu_us_kal_diphone/).
+Here we assume there is no LAR files (even though there were in that
+original recording) and appropriate parameters have been set in
+bin/make_pm_wave to extract the pitchmarks from waveforms directly.
+
+Note there has ben *NO* tidy up to phone labels, power, or ptichmakrs
+which can make a real difference to the end quality.  This is release
+as an pedagogical example, our real release of the diphone voice
+based on these recording has a number of extra corrections
+
+There *NO* need to copy this whole directory, Everthing is derivable
+from the festvox document, except the files in the wav/ directory
+
+The directory structure is 
+ bin/
+     basic scripts for building prompts, labelling feature files etc.s
+ cep/
+     Ceptrum files dynamically created in phone autolabellingl
+ dic/
+     Final diphone dictionary final (used at run-time)
+ etc/
+     prompt file, and some labelling templates 
+ festival/
+     Not used in diphone bases
+ festvox/
+     scheme voice definition files (used at run-time)
+ group/
+     extracted diphones into signle group file for distribution
+ lab/
+     autolabelled phone labels
+ lar/
+     recorded EGG signal files (not used in this example)
+ lpc/
+     LPC parameters plus residuals, (used at run-time for nongrouped version)
+ mcep/
+     MFCC (Mel Frequency Cepstrum Coefficients) not used in diphone databases
+ pm/
+     Pitchmark files as extract from waveforms (or EGG signal)
+ pm_lab/
+     derived pitchmark labeled files from pm/ enabling emulabel (and others
+     display programs) to show the pitchmarks and waveform files.
+ prompt-cep/
+     cepstrum files for
+ prompt-lab/
+     label files for synthesized prompts 
+ prompt-wav/
+     waveforms of synthesized prompts
+ wav/
+     recorded spoken nonsense words (in Microsoft riff (wav) format).
+     If you are using Xwaves you should convert these to NIST format
+ wrd/
+     word label files (not usedin diphone databases)
+
+
+
+
+
+

@@ -1,0 +1,58 @@
+#!/bin/sh
+#####################################################-*-mode:shell-script-*-
+###                                                                       ##
+###                    Alan W Black and Kevin Lenzo                       ##
+###                         Copyright (c) 1998                            ##
+###                        All Rights Reserved.                           ##
+###                                                                       ##
+###  Permission to use, copy, modify,  and licence this software and its  ##
+###  documentation for any purpose, is hereby granted without fee,        ##
+###  subject to the following conditions:                                 ##
+###   1. The code must retain the above copyright notice, this list of    ##
+###      conditions and the following disclaimer.                         ##
+###   2. Any modifications must be clearly marked as such.                ##
+###   3. Original authors' names are not deleted.                         ##
+###                                                                       ##
+###  THE AUTHORS OF THIS WORK DISCLAIM ALL WARRANTIES WITH REGARD TO      ##
+###  THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY   ##
+###  AND FITNESS, IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY         ##
+###  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES            ##
+###  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   ##
+###  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          ##
+###  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       ##
+###  THIS SOFTWARE.                                                       ##
+###                                                                       ##
+###  This file is part "Building Voices in the Festival Speech            ##
+###  Synthesis System" by Alan W Black and Kevin Lenzo written at         ##
+###  Robotics Institute, Carnegie Mellon University, fall 98              ##
+############################################################################
+###                                                                       ##
+###  Generate LPC coefficients and residual for diphones (or otherwise)   ##
+###                                                                       ##
+############################################################################
+
+if [ ! "$ESTDIR" ]
+then
+   echo "environment variable ESTDIR is unset"
+   echo "set it to your local speech tools directory e.g."
+   echo '   bash$ export ESTDIR=/home/awb/projects/speech_tools/'
+   echo or
+   echo '   csh% setenv ESTDIR /home/awb/projects/speech_tools/'
+   exit 1
+fi
+
+for i in $*
+do
+   fname=`basename $i .wav`
+   echo $i
+
+   # Potential normalise the power (a hack)
+   $ESTDIR/bin/ch_wave -scaleN 0.5 $i -o /tmp/tmp$$.wav
+   # or if you want to resample, now is the time (can be combine with above)
+   #$ESTDIR/bin/ch_wave -F 11025 $i -o /tmp/tmp$$.wav
+   # Or use as is
+   #cat $i >/tmp/tmp$$.wav
+   $ESTDIR/bin/sig2fv /tmp/tmp$$.wav -o lpc/$fname.lpc -otype est_binary -lpc_order 16 -coefs "lpc" -pm pm/$fname.pm -preemph 0.95 -factor 3 -window_type hamming
+   $ESTDIR/bin/sigfilter /tmp/tmp$$.wav -o lpc/$fname.res -otype nist -lpcfilter lpc/$fname.lpc -inv_filter
+   rm /tmp/tmp$$.wav
+done

@@ -1,0 +1,52 @@
+#!/bin/sh
+#####################################################-*-mode:shell-script-*-
+###                                                                       ##
+###                    Alan W Black and Kevin Lenzo                       ##
+###                         Copyright (c) 1998                            ##
+###                        All Rights Reserved.                           ##
+###                                                                       ##
+###  Permission to use, copy, modify,  and licence this software and its  ##
+###  documentation for any purpose, is hereby granted without fee,        ##
+###  subject to the following conditions:                                 ##
+###   1. The code must retain the above copyright notice, this list of    ##
+###      conditions and the following disclaimer.                         ##
+###   2. Any modifications must be clearly marked as such.                ##
+###   3. Original authors' names are not deleted.                         ##
+###                                                                       ##
+###  THE AUTHORS OF THIS WORK DISCLAIM ALL WARRANTIES WITH REGARD TO      ##
+###  THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY   ##
+###  AND FITNESS, IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY         ##
+###  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES            ##
+###  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN   ##
+###  AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,          ##
+###  ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF       ##
+###  THIS SOFTWARE.                                                       ##
+###                                                                       ##
+###  This file is part "Building Voices in the Festival Speech            ##
+###  Synthesis System" by Alan W Black and Kevin Lenzo written at         ##
+###  Robotics Institute, Carnegie Mellon University, fall 98              ##
+############################################################################
+###                                                                       ##
+###  Generate (filled) pitchmark file from waveform files                 ##
+###                                                                       ##
+############################################################################
+
+if [ ! "$ESTDIR" ]
+then
+   echo "environment variable ESTDIR is unset"
+   echo "set it to your local speech tools directory e.g."
+   echo '   bash$ export ESTDIR=/home/awb/projects/speech_tools/'
+   echo or
+   echo '   csh% setenv ESTDIR /home/awb/projects/speech_tools/'
+   exit 1
+fi
+
+for i in $*
+do
+   fname=`basename $i .wav`
+   echo $i
+   $ESTDIR/bin/ch_wave -scaleN 0.9 $i -F 16000 -o tmp$$.wav
+   $ESTDIR/bin/pitchmark tmp$$.wav -o pm/$fname.pm -otype est -min 0.005 -max 0.012 -fill -def 0.01 -wave_end -lx_lf 60 -lx_lo 51 -lx_hf 80 -lx_ho 51 -med_o 0
+   rm -f tmp$$.wav
+done
+

@@ -1,0 +1,17 @@
+;;;
+;;;  Accent and F0 prediction
+;;;
+
+;;; 
+(set! cmu_us_kal_int_lr_params
+      '(
+	;; These number may be modified the speakers range.
+	;; Even though we offer an automatic way to do this
+	;; hand tuning often allows a better voice
+	(target_f0_mean 105)   ;; speaker's mean F0
+	(target_f0_std 14)     ;; speaker's range
+	;; These number should remain as they are
+	(model_f0_mean 170)
+	(model_f0_std 34)))
+
+(provide 'cmu_us_kal_int)

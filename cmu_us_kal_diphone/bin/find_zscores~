@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for i in *
+do
+   cat $i | sed '1,/#/d' |
+   awk 'BEGIN {lt=0;}
+        { printf("%s %f\n",$3,($1)-lt);
+          lt=$1}'
+done

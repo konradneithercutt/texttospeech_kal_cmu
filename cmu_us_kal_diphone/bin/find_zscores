@@ -1,0 +1,37 @@
+#!/bin/sh
+
+for i in $*
+do
+   cat $i | sed '1,/#/d' |
+   awk 'BEGIN {lt=0;}
+        { printf("%s %f\n",$3,($1)-lt);
+          lt=$1}'
+done |
+awk 'function std (sum, sumx, n)
+     {
+	if (n==1)
+            n=2;
+        return sqrt(((n*sumx)-(sum*sum)) / (n*(n-1)))
+     }
+     function mean (sum,n)
+     {
+           return sum/n;
+     }
+     {  count[$1] += 1;
+        sum[$1] += $2;
+        sumsq[$1] += $2*$2;
+     }
+     END { 
+	  printf("BEGIN { lt=0; \n");
+          for (i in count)
+          {
+             printf("mean[\"%s\"] = %f; ",
+	             i,mean(sum[i],count[i]));
+             printf("stddev[\"%s\"] = %f;\n",
+	             i,std(sum[i],sumsq[i],count[i]));
+          }
+          printf("}\n");
+	  printf("{ if ($2 == \"26\") {zscore = (($1-lt)-mean[$3])/stddev[$3]; if (zscore*zscore > 9) print $0;}}\n");
+         }'          
+       
+

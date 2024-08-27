@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -f durzscores.awk ]
+then
+    bin/find_zscores >durzscores.awk
+fi
+
+for i in lab/*
+do
+    echo $i
+    cat $i | awk -f durzscores.awk
+done |
+awk '{if (NF == 1)
+         fileid = $1
+      else 
+         printf("%s %s\n",fileid,$0);}'
+         
